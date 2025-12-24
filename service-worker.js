@@ -6,26 +6,20 @@ const ASSETS = [
   "./app.js",
   "./manifest.webmanifest",
 
-  // imágenes base
   "./img/fondo.jpg",
-  "img/poster-enredados.jpeg",
-    "./img/poster-matilda.jpg",
-    "./img/rapunzel.png",
-  "./img/rapunzel_closed.PNG",
+  "./img/poster-enredados.jpeg",
+  "./img/poster-matilda.jpg",
+  "./img/rapunzel_closed.png",
   "./img/rapunzel_open.png",
 
-  // audios si los usas
   "./sfx/tap.mp3",
   "./sfx/sparkle.mp3",
   "./sfx/snap-good.mp3",
   "./sfx/snap-bad.mp3",
-  "./sfx/pop.mp3",
 
-  // iconos (mínimo)
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/apple-touch-icon.png",
-  "./icons/source.png",
+  "./apple-icon-180.png",
+  "./manifest-icon-192.maskable.png",
+  "./manifest-icon-512.maskable.png"
 ];
 
 // Install: precache
