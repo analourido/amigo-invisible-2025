@@ -1,0 +1,1084 @@
+:root{
+  --radius: 26px;
+  --shadow: 0 18px 60px rgba(0,0,0,.28);
+
+  /* Parallax */
+  --mx: 0px;
+  --my: 0px;
+
+  /* “Pro” tokens */
+  --glass: rgba(255,255,255,.10);
+  --glass-strong: rgba(255,255,255,.14);
+  --stroke: rgba(255,255,255,.16);
+  --stroke-strong: rgba(255,255,255,.22);
+  --text-dim: rgba(255,255,255,.82);
+  --text-dimmer: rgba(255,255,255,.70);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:#070a12;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  color:#fff;
+}
+
+.wrap{ width:min(620px, 100%); }
+
+/* ================= INTRO ================= */
+.intro{
+  position:fixed; inset:0;
+  display:grid; place-items:center;
+  background:
+    radial-gradient(1200px 900px at 40% 20%, rgba(255,210,240,.18), transparent 60%),
+    radial-gradient(1200px 900px at 80% 10%, rgba(160,210,255,.18), transparent 55%),
+    rgba(8,10,18,.75);
+  backdrop-filter: blur(12px);
+  z-index:999;
+}
+.intro.hidden{display:none}
+
+.introCard{
+  width:min(520px, 92vw);
+  border-radius: 28px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--stroke);
+  box-shadow: 0 30px 90px rgba(0,0,0,.45);
+  padding: 20px 18px 18px;
+}
+.badge{
+  display:inline-flex;
+  padding:8px 10px;
+  border-radius:999px;
+  font-size:12px;
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.08);
+  margin-bottom:10px;
+}
+.introCard h1{
+  margin:0 0 8px;
+  font-size: 34px;
+  letter-spacing:.2px;
+}
+.introCard p{
+  margin:0 0 14px;
+  color: var(--text-dim);
+  line-height:1.35;
+}
+.introActions{ display:flex; gap:10px; flex-wrap:wrap; }
+
+.primary{
+  appearance:none;
+  border:0;
+  cursor:pointer;
+  padding:12px 14px;
+  border-radius: 16px;
+  font-weight:900;
+  background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.10));
+  color:#fff;
+  border:1px solid var(--stroke);
+  box-shadow: 0 12px 28px rgba(0,0,0,.25);
+  transition: transform .12s ease, filter .12s ease;
+}
+.primary:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+
+.ghost{
+  appearance:none;
+  border:1px solid var(--stroke);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.86);
+  padding:12px 14px;
+  border-radius: 16px;
+  cursor:pointer;
+  font-weight:800;
+  transition: transform .12s ease, filter .12s ease;
+}
+.ghost:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+
+.fineprint{
+  margin-top:12px !important;
+  font-size:12px;
+  color: var(--text-dimmer) !important;
+}
+
+/* ================= ESCENA ================= */
+.scene{
+  position:relative;
+  width:100%;
+  aspect-ratio: 9/14;
+  border-radius: var(--radius);
+  overflow:hidden;
+  box-shadow: var(--shadow);
+  border:1px solid rgba(255,255,255,.12);
+  background:#0b0f1a;
+  isolation:isolate;
+}
+
+/* Cinemático: grain + “bloom” suave */
+.scene::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:4;
+  opacity:.10;
+  background:
+    /* grain “fake” sin assets */
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.10) 0px,
+      rgba(255,255,255,.10) 1px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0) 4px),
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.08) 0px,
+      rgba(255,255,255,.08) 1px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0) 5px);
+  mix-blend-mode: overlay;
+}
+
+/* Fondo con parallax + fotograma */
+.bg{
+  position:absolute;
+  inset:-30px;
+  z-index:1;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.65)),
+    url("img/fondo.jpg") center/cover no-repeat;
+  transform: translate3d(calc(var(--mx) * .35), calc(var(--my) * .35), 0) scale(1.06);
+  filter: saturate(1.05) contrast(1.05);
+  transition: filter .25s ease, transform .25s ease;
+}
+
+/* FX layers */
+.fx{position:absolute; inset:0; pointer-events:none; z-index:2;}
+.fx--vignette{
+  background: radial-gradient(900px 700px at 50% 25%, transparent 35%, rgba(0,0,0,.48) 85%);
+  mix-blend-mode: multiply;
+}
+.fx--stars{
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.55) 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,.30) 1px, transparent 2px);
+  background-size: 120px 120px, 190px 190px;
+  background-position: 0 0, 55px 85px;
+  opacity:.16;
+  animation: starDrift 18s linear infinite;
+}
+@keyframes starDrift{
+  from{ transform: translate3d(0,0,0); }
+  to{ transform: translate3d(-80px,-60px,0); }
+}
+.fx--particles{ z-index:3; }
+
+/* HUD */
+.hud{
+  position:absolute;
+  top:14px; left:14px; right:14px;
+  display:flex; justify-content:space-between; align-items:center;
+  z-index:10;
+}
+.pill{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border-radius:999px;
+  background: var(--glass);
+  border:1px solid var(--stroke);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.20);
+}
+.dot{
+  width:8px; height:8px; border-radius:999px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 0 16px rgba(255,255,255,.50);
+}
+.pillTitle{font-weight:900; letter-spacing:.2px;}
+
+.pillProg{
+  margin-left: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.16);
+  color: rgba(255,255,255,.92);
+}
+
+/* opcional: cuando está escribiendo, damos feedback visual sutil */
+.scene.is-locked .tapPulse{ opacity: .18; }
+.scene.is-locked .character{ cursor: default; }
+
+.iconBtn{
+  appearance:none;
+  border:1px solid var(--stroke);
+  background: rgba(0,0,0,.22);
+  color:#fff;
+  width:42px; height:42px;
+  border-radius: 14px;
+  cursor:pointer;
+  backdrop-filter: blur(12px);
+  font-weight:900;
+  box-shadow: 0 14px 28px rgba(0,0,0,.22);
+  transition: transform .12s ease, filter .12s ease, border-color .12s ease;
+}
+.iconBtn:hover{ border-color: var(--stroke-strong); }
+.iconBtn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+.hudRight{display:flex; gap:10px;}
+
+/* Character */
+.character{
+  position:absolute;
+  right: 1px;
+  left: auto;
+  bottom: 1px;
+  transform: none;
+
+  /* En móvil crece con la pantalla, pero con límites */
+width: clamp(210px, 160%, 320px);
+max-width: 360px; /* por si el 160% te hace cosas raras */
+
+
+  border:0;
+  background:transparent;
+  padding:0;
+  cursor:pointer;
+  z-index:6;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .14s ease, filter .14s ease, opacity .2s ease;
+}
+
+
+/* halo detrás del personaje (ajustado al anclaje right) */
+.character::before{
+  content:"";
+  position:absolute;
+  inset:-22px -10px -12px -18px; /* más “halo” hacia la izquierda */
+  border-radius: 40px;
+  background:
+    radial-gradient(closest-side at 55% 45%,
+      rgba(255,255,255,.22),
+      rgba(255,255,255,.08) 45%,
+      rgba(0,0,0,0) 70%);
+  opacity:.55;
+  filter: blur(6px);
+  pointer-events:none;
+  transition: opacity .2s ease;
+}
+
+.character:hover::before{ opacity:.70; }
+
+/* Tap feedback “app”: press */
+.character.is-pressed{
+  filter: brightness(.99);
+}
+
+.sprite{position:relative; width:100%;}
+.rap{
+  width:100%;
+  height:auto;
+  display:block;
+  position:absolute;
+  left:0; top:0;
+  filter: drop-shadow(0 22px 30px rgba(0,0,0,.55));
+}
+.rap--closed{ opacity:1; }
+.rap--open{ opacity:0; }
+
+/* hablando: alterna cerrada/abierta */
+.character.is-speaking .rap--closed{ opacity:0; }
+.character.is-speaking .rap--open{ opacity:1; }
+
+/* Para que el contenedor tenga altura (porque son absolute) */
+.sprite::before{
+  content:"";
+  display:block;
+  padding-top: 162.9%; /* 487/299*100 */
+}
+
+
+/* pulso “tócame” más fino */
+.tapPulse{
+  position:absolute;
+  left:50%;
+  top:20%;
+  width:12px; height:12px;
+  border-radius:999px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 0 0 0 rgba(255,255,255,.28);
+  transform: translate(-50%,-50%);
+  animation: pulse 1.65s ease-in-out infinite;
+  opacity:.9;
+}
+@keyframes pulse{
+  0%{ box-shadow: 0 0 0 0 rgba(255,255,255,.26); transform: translate(-50%,-50%) scale(1); }
+  100%{ box-shadow: 0 0 0 28px rgba(255,255,255,0); transform: translate(-50%,-50%) scale(1.10); }
+}
+
+/* Speech bubble */
+.speech{
+  position:absolute;
+  left: 50px;
+  right: 50px;  /* reserva hueco para Rapunzel */
+  bottom: 500px;
+  transform: none;
+  z-index:8;
+  width:auto;
+  pointer-events:none;
+}
+
+
+.speechBubble{
+  position:relative;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(0,0,0,.10);
+  box-shadow: 0 18px 40px rgba(0,0,0,.30);
+}
+.speechHeader{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:6px;
+  font-size:12px;
+  color: rgba(0,0,0,.65);
+  font-weight:800;
+}
+.speechBubble p{
+  margin:0;
+  line-height:1.35;
+  color:#12121a;
+  font-size:15px;
+}
+.speechBubble::after{
+  content:"";
+  position:absolute;
+  bottom:-10px;
+  right: 70px;          /* mueve el piquito a izquierda/derecha */
+  width:18px; height:18px;
+  background: rgba(255,255,255,.96);
+  border-left: 1px solid rgba(0,0,0,.10);
+  border-bottom: 1px solid rgba(0,0,0,.10);
+  transform: rotate(45deg);
+}
+
+/* ✅ FIX: el bocadillo NO debe hacer translateX(-50%) */
+.speech.hidden{
+  opacity: 0;
+  transform: translateY(10px) scale(.98);
+}
+
+.speech.show{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Actions bottom */
+.actions{
+  position:absolute;
+  left:14px; right:14px; bottom:14px;
+  display:flex; gap:10px; flex-wrap:wrap;
+  z-index:10;
+}
+.actions.is-hidden{ display:none; }
+
+.btn{
+  flex:1 1 180px;
+  text-decoration:none;
+  padding:12px 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.14);
+  color:#fff;
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(12px);
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.25);
+  transition: transform .12s ease, opacity .12s ease, border-color .12s ease;
+}
+.btn:hover{ transform: translateY(-1px); opacity:.98; border-color: rgba(255,255,255,.26); }
+.btn:active{ transform: translateY(1px) scale(.99); opacity:.98; }
+.btnTop{ font-weight:950; }
+.btnSub{ font-size:12px; color: rgba(255,255,255,.78); font-weight:700; }
+
+/* Modal */
+.modal{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(12px);
+  z-index:50;
+}
+.modalCard{
+  width:min(520px, 90%);
+  border-radius: 22px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--stroke);
+  padding: 16px;
+  color:#fff;
+  box-shadow: 0 30px 90px rgba(0,0,0,.45);
+}
+.modalCard h2{margin:0 0 10px;}
+.modalCard ol{margin:0 0 14px; color: rgba(255,255,255,.86); line-height:1.45;}
+.modal.hidden{ display:none; }
+
+/* Picker */
+.picker{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(0,0,0,.58);
+  backdrop-filter: blur(12px);
+  z-index:60;
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transition: opacity .22s ease, visibility .22s ease;
+}
+
+.picker.hidden{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+.pickerCard{
+  width:min(560px, 92%);
+  border-radius: 24px;
+/*  background: rgba(255,255,255,.09);
+  border: 1px solid var(--stroke);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55); */
+  padding: 14px;
+  animation: popIn .22s ease-out;
+}
+@keyframes popIn{
+  from{ transform: translateY(14px) scale(.98); opacity:0; }
+  to{ transform: translateY(0) scale(1); opacity:1; }
+}
+.pickerTop{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:10px; margin-bottom: 10px;
+}
+.pickerTop h2{ margin:0; font-size:18px; letter-spacing:.2px; }
+
+.posterGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+.poster{
+  border:0; padding:0;
+  cursor:pointer;
+  border-radius: 18px;
+  overflow:hidden;
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.14);
+  transition: transform .16s ease, opacity .16s ease, border-color .16s ease;
+  position:relative;
+}
+.poster img{
+  width:100%;
+  height:400px;
+  object-fit:cover;
+  display:block;
+  filter: contrast(1.05) saturate(1.05);
+}
+
+.posterMeta{
+  position:absolute;
+  left:10px; right:10px; bottom:10px;
+  padding:10px 10px;
+  border-radius: 14px;
+  background: rgba(0,0,0,.38);
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+}
+
+.poster{
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.poster::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(600px 300px at var(--hx, 50%) var(--hy, 40%),
+      rgba(255,255,255,.22),
+      rgba(255,255,255,0) 60%);
+  opacity: 0;
+  transition: opacity .18s ease;
+  pointer-events:none;
+}
+
+.poster:hover::before{ opacity: .55; }
+
+/* Tilt (solo cuando JS setea variables) */
+.poster{
+  transform: perspective(900px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    translateY(var(--ty, 0px));
+  transition: transform .14s ease, opacity .16s ease, border-color .16s ease;
+}
+
+.poster.is-tilting{
+  --ty: -2px;
+}
+
+.poster.is-pressed{
+  transform: perspective(900px) rotateX(0deg) rotateY(0deg) translateY(1px) scale(.992);
+  opacity: .98;
+}
+
+/* CTA pill dentro del póster */
+.posterCTA{
+  position:absolute;
+  left:12px;
+  right:12px;
+  top:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.34);
+  border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(12px);
+  font-weight: 900;
+  letter-spacing: .2px;
+  color: rgba(255,255,255,.92);
+}
+
+.posterCTA--play{
+  left:12px;
+  right:auto;
+  width: fit-content;
+  padding:10px 12px;
+}
+
+.ctaDot{
+  width:8px; height:8px;
+  border-radius:999px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 0 14px rgba(255,255,255,.45);
+}
+
+/* Play overlay SOLO para Enredados */
+.poster--play .posterPlay{
+  position:absolute;
+  left:50%;
+  top:44%;
+  transform: translate(-50%, -50%);
+  width:64px; height:64px;
+  border-radius: 22px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  font-weight: 900;
+  background: rgba(0,0,0,.32);
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 22px 50px rgba(0,0,0,.30);
+  transition: transform .16s ease, opacity .16s ease;
+  opacity:.96;
+}
+
+.poster--play:hover .posterPlay{
+  transform: translate(-50%, -50%) scale(1.03);
+}
+
+
+.posterTitle{ font-weight:950; letter-spacing:.2px; }
+.posterSub{
+  margin-top:2px;
+  font-size:12px;
+  color: rgba(255,255,255,.78);
+  font-weight:700;
+}
+.poster:hover{ transform: translateY(-2px); opacity:.99; border-color: rgba(255,255,255,.22); }
+.poster:active{ transform: translateY(1px) scale(.99); opacity:.98; }
+
+.pickerNote{
+  margin:10px 0 0;
+  font-size:12px;
+  color: rgba(255,255,255,.72);
+}
+
+/* ✅ Modo “final”: cuando está el picker abierto, bajamos escena */
+.scene.is-choosing .bg{
+  filter: blur(2px) saturate(.95) brightness(.82);
+  transform: translate3d(calc(var(--mx) * .25), calc(var(--my) * .25), 0) scale(1.08);
+}
+.scene.is-choosing .character{
+  opacity:.90;
+}
+.scene.is-choosing .character::before{
+  opacity:.32;
+}
+.scene.is-choosing .tapPulse{
+  opacity:.25;
+}
+
+/* Resp */
+@media (max-width: 460px){
+  .poster img{ height:200px; }
+  .speech{ bottom: 330px; }
+  .character{ bottom: 96px; width: 86%; }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
+
+.loading{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(0,0,0,.60);
+  backdrop-filter: blur(12px);
+  z-index: 80;
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .18s ease, visibility .18s ease;
+}
+
+.loading.hidden{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loadingCard{
+  width:min(520px, 90%);
+  border-radius: 22px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+  padding: 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.spinner{
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.22);
+  border-top-color: rgba(255,255,255,.92);
+  animation: spin .65s linear infinite;
+}
+
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+.loadingText{
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+
+.loadingSub{
+  margin-left:auto;
+  font-size: 12px;
+  color: rgba(255,255,255,.70);
+  font-weight: 700;
+}
+
+/* ========== PICKER TINDER ========== */
+.picker{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(12px);
+  z-index:60;
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .22s ease, visibility .22s ease;
+}
+.picker.hidden{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.picker.is-leaving{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pickerTinder{
+  width:min(560px, 92%);
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  background: rgba(20,22,30,.55);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+}
+
+.pickerTopRow{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.pickerTitle h2{
+  margin:0;
+  font-size:18px;
+  letter-spacing:.2px;
+}
+.pickerKicker{
+  font-weight:900;
+  font-size:12px;
+  color: rgba(255,255,255,.78);
+  margin-bottom: 2px;
+}
+.pickerHint{
+  margin:6px 0 0;
+  font-size:12px;
+  color: rgba(255,255,255,.70);
+  font-weight: 700;
+}
+
+.cardStack{
+  position:relative;
+  height: 360px;
+  margin: 12px auto 10px;
+  perspective: 1000px;
+}
+
+/* Card “tinder” (menos redondo, más premium) */
+.movieCard{
+  position:absolute;
+  inset:0;
+  border-radius: 22px;
+  overflow:hidden;
+  background: rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 26px 60px rgba(0,0,0,.35);
+  transform: translate3d(0,0,0) rotate(0deg);
+  will-change: transform, opacity;
+
+  /* ✅ CLAVE: por defecto no clicable y abajo */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.movieCard.is-active{
+  /* ✅ CLAVE: la activa arriba y clicable */
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.movieCard:not(.is-active){
+  z-index: 2;
+  transform: translate3d(0,10px,0) scale(.98);
+  opacity: .92;
+}
+
+
+.movieCard.is-back{
+  transform: translateY(10px) scale(.97);
+  filter: saturate(.92) brightness(.92);
+  opacity: .95;
+}
+
+.movieCard.is-front{
+  cursor: grab;
+}
+.movieCard.is-front:active{
+  cursor: grabbing;
+}
+
+.movieImg{
+  position:absolute;
+  inset:0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+}
+
+.movieShade{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.72) 75%),
+    radial-gradient(700px 420px at 50% 20%, rgba(255,255,255,.10), transparent 55%);
+}
+
+.movieMeta{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:12px;
+}
+.movieTitle{
+  font-weight: 950;
+  font-size: 22px;
+  letter-spacing: .2px;
+}
+.movieSub{
+  margin-top:4px;
+  font-size: 13px;
+  color: rgba(255,255,255,.78);
+  font-weight: 750;
+}
+
+.badgeLike{
+  position:absolute;
+  top:14px;
+  left:14px;
+  padding:10px 12px;
+  border-radius: 12px; /* no pill, más “stamp” */
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+  font-weight: 950;
+  letter-spacing: .25px;
+  color: rgba(255,255,255,.95);
+  transform: rotate(-8deg);
+  opacity: 0;
+  z-index: 3;
+}
+.badgeNope{
+  left:auto;
+  right:14px;
+  transform: rotate(8deg);
+}
+
+/* Controles tinder */
+.tinderActions{
+  display:flex;
+  justify-content:center;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.tBtn{
+  width: 56px;
+  height: 56px;
+  border-radius: 16px; /* cuadradito premium */
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
+  color:#fff;
+  font-weight: 950;
+  cursor:pointer;
+  box-shadow: 0 18px 40px rgba(0,0,0,.28);
+  transition: transform .12s ease, filter .12s ease, border-color .12s ease;
+}
+.tBtn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+.tBtn--like{ background: rgba(255,255,255,.10); }
+.tBtn--nope{ background: rgba(0,0,0,.22); }
+
+.pickerNote2{
+  margin: 10px 0 0;
+  text-align:center;
+  font-size:12px;
+  color: rgba(255,255,255,.68);
+  font-weight: 700;
+}
+
+/* Cuando está el picker abierto: escena “cinema mode” */
+.scene.is-choosing .bg{
+  filter: blur(2px) saturate(.95) brightness(.82);
+  transform: translate3d(calc(var(--mx) * .25), calc(var(--my) * .25), 0) scale(1.08);
+}
+.scene.is-choosing .tapPulse{ opacity:.18; }
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce){
+  .movieCard{ transition: none !important; }
+}
+
+/* =================== TINDER PICKER =================== */
+
+.pickerCard--tinder{
+  padding: 14px 14px 12px;
+}
+
+.cardStack{
+  position: relative;
+  width: 100%;
+  height: 800px;
+  margin-top: 10px;
+  user-select: none;
+  touch-action: pan-y; /* deja scroll vertical, bloquea gestos raros */
+}
+
+.movieCard{
+  position:absolute;
+  inset:0;
+  border-radius: 22px;
+  overflow:hidden;
+  background: rgba(0, 0, 0, 0);
+  border: 0px solid rgba(255,255,255,.14);
+  box-shadow: 0 26px 60px rgba(0,0,0,.35);
+  transform: translate3d(0,0,0) rotate(0deg);
+  will-change: transform, opacity;
+}
+
+.movieCard:not(.is-active){
+  transform: translate3d(0,10px,0) scale(.98);
+  filter: blur(0px);
+  opacity: .92;
+}
+
+.moviePoster{
+  width:100%;
+  height:auto;
+  object-fit: cover;
+  display:block;
+  filter: contrast(1.05) saturate(1.05);
+}
+
+.movieOverlay{
+  position:absolute;
+  left:12px; right:12px; bottom:12px; 
+  padding: 12px 12px;
+  border-radius: 16px;
+  background: rgba(0,0,0,.38);
+  border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+}
+
+.movieTitle{ font-weight: 900; letter-spacing: .2px; font-size: 18px; }
+.movieSub{ margin-top:2px; font-size:12px; color: rgba(255,255,255,.78); font-weight:700; }
+
+.badgeLike, .badgeNope{
+  position:absolute;
+  top:16px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity .08s linear;
+}
+.badgeLike{ left:16px; }
+.badgeNope{ right:16px; }
+
+.tinderActions{
+  display:flex;
+  gap:10px;
+  margin-top: 12px;
+}
+.tinderBtn{
+  flex:1;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 18px;
+  padding: 12px 14px;
+  cursor:pointer;
+  font-weight: 900;
+  background: rgba(255,255,255,.10);
+  color:#fff;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.25);
+  transition: transform .12s ease, filter .12s ease, border-color .12s ease;
+}
+.tinderBtn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+.tinderBtn--like:hover{ border-color: rgba(130,255,170,.35); }
+.tinderBtn--nope:hover{ border-color: rgba(255,130,130,.35); }
+
+/* Animación al “tirar” */
+.movieCard.is-leaving{
+  pointer-events:none;
+}
+
+/* =================== CONFIRM MODAL =================== */
+.confirm{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(0,0,0,.56);
+  backdrop-filter: blur(12px);
+  z-index: 80;
+}
+.confirm.hidden{ display:none; }
+
+.confirmCard{
+  width: min(520px, 92%);
+  border-radius: 22px;
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.16);
+  padding: 16px;
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+}
+.confirmTitle{
+  font-weight: 950;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+.confirmText{
+  margin: 0 0 12px;
+  color: rgba(255,255,255,.78);
+  line-height: 1.35;
+}
+.confirmActions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  flex-wrap: wrap;
+}
+
+/* =================== LOADING =================== */
+.loading{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(10px);
+  z-index: 90;
+}
+.loading.hidden{ display:none; }
+
+.loadingCard{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+  font-weight: 900;
+}
+
+.spinner{
+  width:18px; height:18px;
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.25);
+  border-top-color: rgba(255,255,255,.9);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg);} }
+
+@media (max-width: 460px){
+  .cardStack{ height: 340px; }
+}
