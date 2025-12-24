@@ -11,7 +11,7 @@ const ASSETS = [
   "img/poster-enredados.jpeg",
     "./img/poster-matilda.jpg",
     "./img/rapunzel.png",
-  "./img/rapunzel_closed.png",
+  "./img/rapunzel_closed.PNG",
   "./img/rapunzel_open.png",
 
   // audios si los usas
