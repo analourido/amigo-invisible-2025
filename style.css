@@ -926,12 +926,14 @@ body{
 .wrap{
   width: 100%;
   max-width: 920px;
+  height: 100%;
+  max-height: 920px;
 }
 
 /* La escena debe adaptarse a la altura disponible, NO a un aspect-ratio fijo */
 .scene{
   width: 100%;
-  height: min(920px, calc(100svh - (var(--pad) * 2) - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+  height: min(920px, 100%);
   aspect-ratio: auto; /* ✅ mata el 9/14 fijo */
   border-radius: clamp(20px, 2.5vw, 30px);
 }
